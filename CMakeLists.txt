@@ -190,7 +190,7 @@ SET(CT_ARCH "i386")
 IF (EMBED_64BIT_CLIENTTOOLS)
   SET(CT_ARCH "x86_64")
 ENDIF ()
-find_file(CLIENTTOOLS_PACKAGE_FILE "hpccsystems-clienttools-community_${version}-${stagever}${CMAKE_SYSTEM_NAME}-${CT_ARCH}.exe" HINTS ${CMAKE_CURRENT_BINARY_DIR}/../HPCC-Platform )
+find_file(CLIENTTOOLS_PACKAGE_FILE "hpccsystems-clienttools-community_${version}-${stagever}${CMAKE_SYSTEM_NAME}-${CT_ARCH}.exe" HINTS ${CMAKE_CURRENT_BINARY_DIR}/../HPCC-Platform ${CMAKE_CURRENT_BINARY_DIR}/../.. ${CMAKE_CURRENT_BINARY_DIR}/.. )
 MESSAGE ("-- Clienttools package: ${CLIENTTOOLS_PACKAGE_FILE}")
 if (CLIENTTOOLS_PACKAGE_FILE)
     install ( PROGRAMS ${CLIENTTOOLS_PACKAGE_FILE} DESTINATION tmp )
@@ -198,6 +198,8 @@ if (CLIENTTOOLS_PACKAGE_FILE)
     list ( APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
         ExecWait '$INSTDIR\\\\tmp\\\\${CLIENTTOOLS_PACKAGE_FILE_NAME} /S'
 ")
+else (CLIENTTOOLS_PACKAGE_FILE)
+    MESSAGE(FATAL_ERROR "Could not locate hpccsystems-clienttools-community_${version}-${stagever}${CMAKE_SYSTEM_NAME}-${CT_ARCH}.exe")
 endif (CLIENTTOOLS_PACKAGE_FILE)
 
 # Calculate GIT Build Tag  ---
