@@ -237,7 +237,7 @@ IF (EXISTS "${PROJECT_SOURCE_DIR}/../sign/passphrase.txt")
 ENDIF ()
 
 IF (PFX_PASSWORD)
-    SET(CPACK_NSIS_FINALIZE_CMD "signtool sign /f \\\"${PROJECT_SOURCE_DIR}/../sign/hpcc_code_signing.pfx\\\" /fd SHA256 /p \\\"${PFX_PASSWORD}\\\" /tr http://timestamp.digicert.com /td SHA256")
+    SET(CPACK_NSIS_FINALIZE_CMD "smctl sign --simple --keypair-alias \\\"${DIGICERT_KEYPAIR_ALIAS}\\\" --dynamic-auth --timestamp --verbose --exit-non-zero-on-fail --failfast --input")
     
     SET(CPACK_NSIS_DEFINES "
         !define MUI_STARTMENUPAGE_DEFAULTFOLDER \\\"${CPACK_PACKAGE_VENDOR}\\\\${version}\\\\${CPACK_NSIS_DISPLAY_NAME}\\\"
@@ -247,7 +247,7 @@ IF (PFX_PASSWORD)
     ")
 
     ADD_CUSTOM_TARGET(SIGN
-        COMMAND signtool sign /f "${PROJECT_SOURCE_DIR}/../sign/hpcc_code_signing.pfx" /fd "SHA256" /p "${PFX_PASSWORD}" /tr "http://timestamp.digicert.com" /td "SHA256" "${CMAKE_BINARY_DIR}/${CPACK_PACKAGE_NAME}*.exe"
+        COMMAND smctl sign --simple --input "${CMAKE_BINARY_DIR}/${CPACK_PACKAGE_NAME}*.exe" --keypair-alias "${DIGICERT_KEYPAIR_ALIAS}" --dynamic-auth --timestamp --verbose --exit-non-zero-on-fail --failfast
         COMMENT "Digital Signature"
     )
     ADD_DEPENDENCIES(SIGN PACKAGE)
